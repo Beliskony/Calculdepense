@@ -1,12 +1,16 @@
 import { useState } from "react"
+import { useNavigate} from "react-router-dom";
+import axios from "axios"
+
 
 
 const Inscription = () => {
+   const navigate = useNavigate();
    const [formData, setFormData] = useState({
-    nom:"",
-    email:"",
-    contact:"",
-    motDePasse:""
+    Nom:"",
+    Email:"",
+    Contact:"",
+    MotDePasse:""
    })
 
    const changement = (e: React.ChangeEvent<HTMLInputElement>) =>{
@@ -14,17 +18,33 @@ const Inscription = () => {
     setFormData((prev) => ({...prev, [name]:value}))
    }
 
+   const soumettreFormulaire = async (e: React.FormEvent) => {
+    e.preventDefault(); // Empêche le rechargement de la page
+
+    try {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData);
+        console.log("Inscription réussie", response.data);
+        // Redirige l'utilisateur après l'inscription réussie
+        navigate("/dashboard");
+    } catch (error) {
+        console.error("Erreur lors de l'inscription", error);
+        // Gérer l'erreur ici, par exemple afficher un message d'erreur
+    }
+};
+
+
+
   return (
     <div className="flex flex-col w-full bg-white gap-y-8">
         <h2 className="text-2xl text-center font-medium">Créer un compte</h2>
     
-    <form  className="flex flex-col mx-10 gap-y-4">
+    <form onSubmit={soumettreFormulaire} className="flex flex-col mx-10 gap-y-4">
         <div className="flex flex-row justify-center gap-x-3 rounded-2xl items-center border-[0.1px] border-transparent shadow-lg">
           <img src="https://img.icons8.com/?size=20&id=ywULFSPkh4kI&format=png&color=003C57" className="mx-2"/>
           <input placeholder="Entrez votre nom"
-                 name="nom"
+                 name="Nom"
                  type="text"
-                 value={formData.nom}
+                 value={formData.Nom}
                  onChange={changement}
                  required
                  className="w-full h-11 text-left outline-none"/>
@@ -33,9 +53,9 @@ const Inscription = () => {
         <div className="flex flex-row justify-center gap-x-3 rounded-2xl items-center border-[0.1px] border-transparent shadow-lg">
           <img src="https://img.icons8.com/?size=20&id=53435&format=png&color=003C57" className="mx-2"/>
           <input placeholder="mail"
-                 name="email"
+                 name="Email"
                  type="email"
-                 value={formData.email}
+                 value={formData.Email}
                  onChange={changement}
                  required
                  className="w-full h-11 text-left outline-none focus:ring-0"/>
@@ -44,9 +64,9 @@ const Inscription = () => {
         <div className="flex flex-row justify-center gap-x-3 rounded-2xl items-center border-[0.1px] border-transparent shadow-lg">
           <img src="https://img.icons8.com/?size=20&id=jShwZ2RCyPSO&format=png&color=003C57" className="mx-2"/>
           <input placeholder="Contact"
-                 name="contact"
+                 name="Contact"
                  type="text"
-                 value={formData.contact}
+                 value={formData.Contact}
                  onChange={changement}
                  required
                  className="w-full h-11 text-left outline-none focus:ring-0"/>
@@ -55,9 +75,9 @@ const Inscription = () => {
         <div className="flex flex-row justify-center gap-x-3 rounded-2xl items-center border-[0.1px] border-transparent shadow-lg">
           <img src="https://img.icons8.com/?size=20&id=10480&format=png&color=003C57" className="mx-2"/>
           <input placeholder="Mot de passe"
-                 name="motDePasse"
+                 name="MotDePasse"
                  type="password"
-                 value={formData.motDePasse}
+                 value={formData.MotDePasse}
                  onChange={changement}
                  required
                  className="w-full h-11 text-left outline-none focus:ring-0"/>
